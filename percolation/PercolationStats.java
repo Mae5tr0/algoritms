@@ -1,12 +1,14 @@
-import edu.princeton.cs.algs4.*;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-    private double results[];
-    private int t;
-    // perform trials independent experiments on an n-by-n grid
+    private static final double CONFIDENCE_95 = 1.96;
+
+    private final double[] results;
+    private final int t;
+
+    //perform trials independent experiments on an n-by-n grid
     public PercolationStats(int n, int trials) {
         results = new double[trials];
         t = trials;
@@ -16,44 +18,40 @@ public class PercolationStats {
         }
 
         for (int i = 0; i < trials; i++) {
-            StdRandom.setSeed(i);
             Percolation perc = new Percolation(n);
 
-            while(!perc.percolates()) {
+            while (!perc.percolates()) {
                 perc.open(StdRandom.uniform(1, n + 1), StdRandom.uniform(1, n + 1));
             }
 
-            results[i] = perc.numberOfOpenSites()/((double)n*n);
+            results[i] = perc.numberOfOpenSites() / ((double) n * n);
         }
     }
 
-    // sample mean of percolation threshold
+    //sample mean of percolation threshold
     public double mean() {
         return StdStats.mean(results);
     }
 
-    // sample standard deviation of percolation threshold
+    //sample standard deviation of percolation threshold
     public double stddev() {
         return StdStats.stddev(results);
     }
 
-    // low  endpoint of 95% confidence interval
+    //low  endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean() - (1.96 * stddev())/Math.sqrt(t);
+        return mean() - (CONFIDENCE_95 * stddev()) / Math.sqrt(t);
     }
 
-    // high endpoint of 95% confidence interval
+    //high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean() +(1.96 * stddev())/Math.sqrt(t);
+        return mean() + (CONFIDENCE_95 * stddev()) / Math.sqrt(t);
     }
 
     // test client (described below)
     public static void main(String[] args) {
-//        int n = Integer.parseInt(args[0]);
-//        int t = Integer.parseInt(args[1]);
-
-        int n = 4;
-        int t = 10;
+        int n = Integer.parseInt(args[0]);
+        int t = Integer.parseInt(args[1]);
 
         PercolationStats ps = new PercolationStats(n, t);
 

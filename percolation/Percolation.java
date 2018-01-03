@@ -1,20 +1,18 @@
-import edu.princeton.cs.algs4.StdRandom;
-import edu.princeton.cs.algs4.StdStats;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-    private int ids[];
+    private static final int TOP = 0;
+
+    private boolean[] ids;
     private int openedSites;
-    private int size;
-    WeightedQuickUnionUF uf;
+    private final int size;
+    private final WeightedQuickUnionUF uf;
 
-    public static final int TOP = 0;
-
-    // create n-by-n grid, with all sites blocked
+    //create n-by-n grid, with all sites blocked
     public Percolation(int n) {
         if (n <= 0) throw new java.lang.IllegalArgumentException();
         size = n;
-        ids = new int[n * n]; // default values will be 0 due lang specification
+        ids = new boolean[n * n]; // default values will be 0 due lang specification
         uf = new WeightedQuickUnionUF(n * n);
         //first and last line are connected between each other through virtual top and bottom accordingly
         for (int i = 1; i < n; i++) {
@@ -24,15 +22,15 @@ public class Percolation {
         openedSites = 0;
     }
 
-    // open site (row, col) if it is not open already
+    //open site (row, col) if it is not open already
     public void open(int row, int col) {
         int idsIndex = xyTo1D(row, col);
-        if (ids[idsIndex] == 1) {
+        if (ids[idsIndex]) {
             return;
         } //site already opened
 
         //open sites and make unions
-        ids[idsIndex] = 1;
+        ids[idsIndex] = true;
         openedSites++;
 
         //multiple unions
@@ -50,27 +48,27 @@ public class Percolation {
         }
     }
 
-    // is site (row, col) open?
+    //is site (row, col) open?
     public boolean isOpen(int row, int col) {
-        return ids[xyTo1D(row, col)] == 1;
+        return ids[xyTo1D(row, col)];
     }
 
-    // is site (row, col) full?
+    //is site (row, col) full?
     public boolean isFull(int row, int col) {
         return isOpen(row, col) && uf.connected(TOP, xyTo1D(row, col));
     }
 
-    // number of open sites
+    //number of open sites
     public int numberOfOpenSites() {
         return openedSites;
     }
 
-    // does the system percolate?
+    //does the system percolate?
     public boolean percolates() {
         return uf.connected(TOP, size * size - 1);
     }
 
-    // test client (optional)
+    //test client (optional)
     public static void main(String[] args) {
         Percolation p = new Percolation(4);
         p.open(1, 1);
@@ -82,7 +80,7 @@ public class Percolation {
         System.out.println(p.percolates());
     }
 
-    // map 2D coordinates to 1D
+    //map 2D coordinates to 1D
     private int xyTo1D(int row, int col) {
         int index = (row - 1) * size + (col - 1);
         if (index < 0 || index > ids.length) throw new java.lang.IllegalArgumentException();
