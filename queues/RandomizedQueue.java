@@ -32,7 +32,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // remove and return a random item
     public Item dequeue() {
-        if (size() == 0) throw new java.util.NoSuchElementException();
+        if (isEmpty()) throw new java.util.NoSuchElementException();
 
         int index = StdRandom.uniform(0, n);
         Item result = a[index];
@@ -45,7 +45,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     // return a random item (but do not remove it)
     public Item sample() {
-        if (size() == 0) throw new java.util.NoSuchElementException();
+        if (isEmpty()) throw new java.util.NoSuchElementException();
 
         return a[StdRandom.uniform(0, n)];
     }
@@ -56,23 +56,24 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     private class RandomizedQueueIterator implements Iterator<Item> {
-        private Item[] copy;
-        private int i;
+        private final Item[] copy;
+        private int i = 0;
+        private final int size;
 
         public RandomizedQueueIterator() {
-            copy = java.util.Arrays.copyOf(a, a.length);
-            i = n;
+            copy = java.util.Arrays.copyOf(a, n);
+            size = copy.length;
             StdRandom.shuffle(copy);
         }
 
         public boolean hasNext() {
-            return i > 0;
+            return i < size;
         }
 
         public Item next() {
             if (!hasNext()) throw new java.util.NoSuchElementException();
 
-            return copy[i--];
+            return copy[i++];
         }
     }
 
@@ -83,10 +84,5 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             temp[i] = a[i];
         }
         a = temp;
-    }
-
-    // unit testing (optional)
-    public static void main(String[] args) {
-
     }
 }

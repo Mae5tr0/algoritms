@@ -120,9 +120,4 @@ public class Deque<Item> implements Iterable<Item> {
             return item;
         }
     }
-
-    // unit testing (optional)
-    public static void main(String[] args) {
-
-    }
 }

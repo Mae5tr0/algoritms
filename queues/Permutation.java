@@ -12,7 +12,7 @@ public class Permutation {
         }
 
         for (int i = 0; i < k; i++) {
-            StdOut.print(q.dequeue());
+            StdOut.println(q.dequeue());
         }
     }
 }
