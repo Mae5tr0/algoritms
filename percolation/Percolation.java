@@ -2,6 +2,7 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
     private static final int TOP = 0;
+    private final int BOTTOM;
 
     private boolean[] ids;
     private int openedSites;
@@ -12,19 +13,18 @@ public class Percolation {
     public Percolation(int n) {
         if (n <= 0) throw new java.lang.IllegalArgumentException();
         size = n;
-        ids = new boolean[n * n]; // default values will be 0 due lang specification
-        uf = new WeightedQuickUnionUF(n * n);
-        //first and last line are connected between each other through virtual top and bottom accordingly
-        for (int i = 1; i < n; i++) {
-            uf.union(0, i); //first line
-            uf.union(n * n - n, n * n - n + i); //last line
-        }
+        int wqufSize = n * n + 2;
+        BOTTOM = wqufSize - 1;
+        ids = new boolean[n * n];
+        uf = new WeightedQuickUnionUF(wqufSize); //additional 2 elements for virtual top and bottom
         openedSites = 0;
     }
 
     //open site (row, col) if it is not open already
     public void open(int row, int col) {
+        validate(row, col);
         int idsIndex = xyTo1D(row, col);
+        int wqufIndex = idsIndex + 1;
         if (ids[idsIndex]) {
             return;
         } //site already opened
@@ -35,27 +35,44 @@ public class Percolation {
 
         //multiple unions
         if (col < size && isOpen(row, col + 1)) {
-            uf.union(idsIndex, idsIndex + 1);
+            uf.union(wqufIndex, wqufIndex + 1);
         }
         if (col > 1 && isOpen(row, col - 1)) {
-            uf.union(idsIndex, idsIndex - 1);
+            uf.union(wqufIndex, wqufIndex - 1);
         }
         if (row < size && isOpen(row + 1, col)) {
-            uf.union(idsIndex, idsIndex + size);
+            uf.union(wqufIndex, wqufIndex + size);
         }
         if (row > 1 && isOpen(row - 1, col)) {
-            uf.union(idsIndex, idsIndex - size);
+            uf.union(wqufIndex, wqufIndex - size);
         }
+        //virtual top
+        if (row == 1) {
+            uf.union(TOP, wqufIndex);
+        }
+        //virtual bottom
+        if (row == size) {
+            uf.union(wqufIndex, BOTTOM);
+        }
+    }
+
+    private void validate(int row, int col) {
+        if (row < 1 || col < 1 || row > size || col > size) {
+            throw new java.lang.IllegalArgumentException();
+        }
+
     }
 
     //is site (row, col) open?
     public boolean isOpen(int row, int col) {
+        validate(row, col);
         return ids[xyTo1D(row, col)];
     }
 
     //is site (row, col) full?
     public boolean isFull(int row, int col) {
-        return isOpen(row, col) && uf.connected(TOP, xyTo1D(row, col));
+        validate(row, col);
+        return uf.connected(TOP, xyTo1D(row, col) + 1);
     }
 
     //number of open sites
@@ -65,7 +82,7 @@ public class Percolation {
 
     //does the system percolate?
     public boolean percolates() {
-        return uf.connected(TOP, size * size - 1);
+        return uf.connected(TOP, BOTTOM);
     }
 
     //test client (optional)
