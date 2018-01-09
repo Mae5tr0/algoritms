@@ -1,4 +1,4 @@
-public class Main {
+public class MainQuickFind {
 //        public static void main(String[] args) {
 //        int N = StdIn.readInt();
 //        UF uf = new UF(N);
