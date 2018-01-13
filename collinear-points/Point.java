@@ -1,37 +1,133 @@
+/******************************************************************************
+ * Compilation:  javac Point.java
+ * Execution:    java Point
+ * Dependencies: none
+ * <p>
+ * An immutable data type for points in the plane.
+ * For use on Coursera, Algorithms Part I programming assignment.
+ ******************************************************************************/
+
+import java.util.Comparator;
+
+import edu.princeton.cs.algs4.StdDraw;  //comment this for properly render locally
+
 public class Point implements Comparable<Point> {
 
-    // constructs the point (x, y)
+    private final int x;     // x-coordinate of this point
+    private final int y;     // y-coordinate of this point
+
+    /**
+     * Initializes a new point.
+     *
+     * @param x the <em>x</em>-coordinate of the point
+     * @param y the <em>y</em>-coordinate of the point
+     */
     public Point(int x, int y) {
-
+        /* DO NOT MODIFY */
+        this.x = x;
+        this.y = y;
     }
 
-    // draws this point
+    /**
+     * Draws this point to standard draw.
+     */
     public void draw() {
-
+        /* DO NOT MODIFY */
+        StdDraw.point(x, y);
     }
 
-    // draws the line segment from this point to that point
+    /**
+     * Draws the line segment between this point and the specified point
+     * to standard draw.
+     *
+     * @param that the other point
+     */
     public void drawTo(Point that) {
-
+        /* DO NOT MODIFY */
+        StdDraw.line(this.x, this.y, that.x, that.y);
     }
 
-    // string representation
-    public String toString() {
-        return "";
-    }
-
-    // compare two points by y-coordinates, breaking ties by x-coordinates
-    public int compareTo(Point that) {
-        return 0;
-    }
-
-    // the slope between this point and that point
+    /**
+     * Returns the slope between this point and the specified point.
+     * Formally, if the two points are (x0, y0) and (x1, y1), then the slope
+     * is (y1 - y0) / (x1 - x0). For completeness, the slope is defined to be
+     * +0.0 if the line segment connecting the two points is horizontal;
+     * Double.POSITIVE_INFINITY if the line segment is vertical;
+     * and Double.NEGATIVE_INFINITY if (x0, y0) and (x1, y1) are equal.
+     *
+     * @param that the other point
+     * @return the slope between this point and the specified point
+     */
     public double slopeTo(Point that) {
-        return 1.0;
+        if (x != that.x && y == that.y) return +0.0;   //horizontal
+        if (x == that.x && y != that.y) return Double.POSITIVE_INFINITY;   //vertical
+        if (x == that.x && y == that.y) return Double.NEGATIVE_INFINITY;  //equal
+        return (that.y - y) / (double) (that.x - x);
     }
 
-    // compare two points by slopes they make with this point
-    public Comparator<Point> slopeOrder() {
+    /**
+     * Compares two points by y-coordinate, breaking ties by x-coordinate.
+     * Formally, the invoking point (x0, y0) is less than the argument point
+     * (x1, y1) if and only if either y0 < y1 or if y0 = y1 and x0 < x1.
+     *
+     * @param that the other point
+     * @return the value <tt>0</tt> if this point is equal to the argument
+     * point (x0 = x1 and y0 = y1);
+     * a negative integer if this point is less than the argument
+     * point; and a positive integer if this point is greater than the
+     * argument point
+     */
+    public int compareTo(Point that) {
+        if (y < that.y) return -1;
+        if (y == that.y && x < that.x) return -1;
+        if (y == that.y && x == that.x) return 0;
+        return 1;
+    }
 
+    /**
+     * Compares two points by the slope they make with this point.
+     * The slope is defined as in the slopeTo() method.
+     *
+     * @return the Comparator that defines this ordering on points
+     */
+    public Comparator<Point> slopeOrder() {
+        return new SlopeOrder(this);
+    }
+
+    //The slopeOrder() method should return a comparator that compares its two argument
+    // points by the slopes they make with the invoking point (x0, y0).
+    // Formally, the point (x1, y1) is less than the point (x2, y2) if and only if the
+    // slope (y1 − y0) / (x1 − x0) is less than the slope (y2 − y0) / (x2 − x0).
+    // Treat horizontal, vertical, and degenerate line segments as in the slopeTo() method.
+    private class SlopeOrder implements Comparator<Point> {
+        private final Point base;
+        public SlopeOrder(Point p) {
+            this.base = p;
+        }
+
+        public int compare(Point a, Point b) {
+            if (base.slopeTo(a) < base.slopeTo(b)) return -1;
+            if (base.slopeTo(a) > base.slopeTo(b)) return 1;
+            return 0;
+        }
+    }
+
+    /**
+     * Returns a string representation of this point.
+     * This method is provide for debugging;
+     * your program should not rely on the format of the string representation.
+     *
+     * @return a string representation of this point
+     */
+    public String toString() {
+        /* DO NOT MODIFY */
+        return "(" + x + ", " + y + ")";
+    }
+
+    /**
+     * Unit tests the Point data type.
+     */
+    public static void main(String[] args) {
+        /* YOUR CODE HERE */
     }
 }

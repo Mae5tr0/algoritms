@@ -21,7 +21,9 @@ public class MainCollinearPoints {
         StdDraw.show();
 
         // print and draw the line segments
+//        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
         FastCollinearPoints collinear = new FastCollinearPoints(points);
+        System.out.println("Find total segments: " + collinear.numberOfSegments());
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
