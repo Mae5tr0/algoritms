@@ -47,7 +47,7 @@ public class PointSET {
     }
 
     // all points that are inside the rectangle (or on the boundary)
-    public Iterable<Point2D> range(RectHV rect)  {
+    public Iterable<Point2D> range(RectHV rect) {
         if (rect == null) throw new java.lang.IllegalArgumentException();
 
         List<Point2D> result = new ArrayList<>();
