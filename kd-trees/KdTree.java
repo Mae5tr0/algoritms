@@ -1,4 +1,5 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class KdTree {
     private void drawBranch(Node node, boolean even, double minX, double maxX, double minY, double maxY) {
         if (node == null) return;
         drawNode(node);
-//        drawLineNode(node, even, minX, maxX, minY, maxY);
+        drawLineNode(node, even, minX, maxX, minY, maxY);
 
         if (even) {
             drawBranch(node.lb, false, minX, node.point.x(), minY, maxY);
@@ -162,23 +163,24 @@ public class KdTree {
         if (node == null) return champion;
 
         Point2D newChampion = champion;
-        if (node.point.distanceTo(point) < champion.distanceTo(point)) {
+        if (node.point.distanceSquaredTo(point) < champion.distanceSquaredTo(point)) {
             newChampion = node.point;
         }
 
         int cmp = even ? Point2D.X_ORDER.compare(point, node.point) : Point2D.Y_ORDER.compare(point, node.point);
-        Point2D normalPoint = even ? new Point2D(node.point.x(), point.y()) : new Point2D(point.x(), node.point.y());
+
+        Double orientationDifference = even ? node.point.x() - point.x() : node.point.y() - point.y();
 
         if (cmp < 0) {
             newChampion = nearest(node.lb, point, newChampion, !even);
 
-            if (newChampion.distanceTo(point) > normalPoint.distanceTo(point)) {
+            if (newChampion.distanceSquaredTo(point) >  orientationDifference*orientationDifference) {
                 newChampion = nearest(node.rt, point, newChampion, !even);
             }
         } else {
             newChampion = nearest(node.rt, point, newChampion, !even);
 
-            if (newChampion.distanceTo(point) > normalPoint.distanceTo(point)) {
+            if (newChampion.distanceSquaredTo(point) > orientationDifference*orientationDifference) {
                 newChampion = nearest(node.lb, point, newChampion, !even);
             }
         }
@@ -188,7 +190,7 @@ public class KdTree {
 
     // unit testing of the methods (optional)
     public static void main(String[] args) {
-        edu.princeton.cs.algs4.StdDraw.setPenRadius(0.01);
+        StdDraw.setPenRadius(0.01);
 
         List<Point2D> points = new ArrayList<>();
         points.add(new Point2D(0.206107, 0.095492));

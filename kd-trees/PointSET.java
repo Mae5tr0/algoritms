@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class PointSET {
-    Set<Point2D> points;
+    private Set<Point2D> points;
 
     // construct an empty set of points
     public PointSET() {
@@ -68,7 +68,7 @@ public class PointSET {
         Point2D nearest = p;
 
         for (Point2D candidate : points) {
-            double distance = candidate.distanceTo(p);
+            double distance = candidate.distanceSquaredTo(p);
 
             if (distance < minimumDistance) {
                 minimumDistance = distance;
