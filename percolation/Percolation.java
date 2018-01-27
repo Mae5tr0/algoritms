@@ -8,6 +8,7 @@ public class Percolation {
     private int openedSites;
     private final int size;
     private final WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF ufFull;
 
     //create n-by-n grid, with all sites blocked
     public Percolation(int n) {
@@ -17,6 +18,7 @@ public class Percolation {
         BOTTOM = wqufSize - 1;
         ids = new boolean[n * n];
         uf = new WeightedQuickUnionUF(wqufSize); //additional 2 elements for virtual top and bottom
+        ufFull = new WeightedQuickUnionUF(wqufSize); //additional elements for virtual top
         openedSites = 0;
     }
 
@@ -36,19 +38,24 @@ public class Percolation {
         //multiple unions
         if (col < size && isOpen(row, col + 1)) {
             uf.union(wqufIndex, wqufIndex + 1);
+            ufFull.union(wqufIndex, wqufIndex + 1);
         }
         if (col > 1 && isOpen(row, col - 1)) {
             uf.union(wqufIndex, wqufIndex - 1);
+            ufFull.union(wqufIndex, wqufIndex - 1);
         }
         if (row < size && isOpen(row + 1, col)) {
             uf.union(wqufIndex, wqufIndex + size);
+            ufFull.union(wqufIndex, wqufIndex + size);
         }
         if (row > 1 && isOpen(row - 1, col)) {
             uf.union(wqufIndex, wqufIndex - size);
+            ufFull.union(wqufIndex, wqufIndex - size);
         }
         //virtual top
         if (row == 1) {
             uf.union(TOP, wqufIndex);
+            ufFull.union(TOP, wqufIndex);
         }
         //virtual bottom
         if (row == size) {
@@ -72,7 +79,7 @@ public class Percolation {
     //is site (row, col) full?
     public boolean isFull(int row, int col) {
         validate(row, col);
-        return uf.connected(TOP, xyTo1D(row, col) + 1);
+        return ufFull.connected(TOP, xyTo1D(row, col) + 1);
     }
 
     //number of open sites
