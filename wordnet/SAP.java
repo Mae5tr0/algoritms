@@ -19,8 +19,8 @@ public class SAP {
         this.G = new Digraph(G);
     }
 
-    private void checkNull(Object o) {
-        if (o == null) throw new java.lang.IllegalArgumentException();
+    private void checkNull(Object object) {
+        if (object == null) throw new java.lang.IllegalArgumentException();
     }
     private void validateVertex(int vertex) {
         if (vertex < 0 || vertex > G.V() - 1) throw new java.lang.IllegalArgumentException();

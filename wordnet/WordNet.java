@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 public class WordNet {
     private Digraph G;
+    private final SAP sap;
     private String[] synsets;
     private Map<String, List<Integer>> synsetsMap;
 
@@ -22,6 +23,8 @@ public class WordNet {
         buildDigraph();
         parseHypernyms(hypernymsFilename);
         verifyDigraph();
+
+        sap = new SAP(G);
     }
 
     private void buildDigraph() {
@@ -60,8 +63,8 @@ public class WordNet {
         synsets = result.toArray(new String[result.size()]);
     }
 
-    private void checkNull(Object o) {
-        if (o == null) throw new java.lang.IllegalArgumentException();
+    private void checkNull(Object object) {
+        if (object == null) throw new java.lang.IllegalArgumentException();
     }
 
     private void parseHypernyms(String hypernyms) {
@@ -81,6 +84,12 @@ public class WordNet {
     private void verifyDigraph() {
         Topological topological = new Topological(G);
         if (!topological.hasOrder()) throw new java.lang.IllegalArgumentException("Graph has no order");
+
+        int rooted = 0;
+        for (int i = 0; i < G.V(); i++) {
+            if (!G.adj(i).iterator().hasNext()) rooted++;
+        }
+        if (rooted != 1) throw new java.lang.IllegalArgumentException("Not a rooted DAG");
     }
 
     // returns all WordNet nouns
@@ -100,7 +109,6 @@ public class WordNet {
         checkNull(nounA);
         checkNull(nounB);
 
-        SAP sap = new SAP(G);
         return sap.length(synsetsMap.get(nounA), synsetsMap.get(nounB));
     }
 
@@ -110,7 +118,6 @@ public class WordNet {
         checkNull(nounA);
         checkNull(nounB);
 
-        SAP sap = new SAP(G);
         int ancestor = sap.ancestor(synsetsMap.get(nounA), synsetsMap.get(nounB));
         if (ancestor == -1) return "";
 
