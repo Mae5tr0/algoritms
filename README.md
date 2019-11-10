@@ -14,5 +14,5 @@ This course covers the essential information that every serious programmer needs
 
 * [WordNet](https://github.com/Mae5tr0/algoritms/tree/master/wordnet)
 * [Seam Curving](https://github.com/Mae5tr0/algoritms/tree/master/seam)
-* Boggle
-* Borrows-Wheeler
+* [Boggle](https://github.com/Mae5tr0/algoritms/tree/master/boggle)
+* [Borrows-Wheeler](https://github.com/Mae5tr0/algoritms/tree/master/borrows)
